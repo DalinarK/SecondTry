@@ -1,14 +1,22 @@
 package com.dusty.secondtry;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,10 +30,24 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 
-public class MyActivity extends Activity{
+public class MyActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     public final static String EXTRA_MESSAGE = "com.dustin.secondtry.MESSAGE";
     String costOfVacation = null;
+
+    GoogleApiClient mGoogleApiClient;
+    private Location mLastLocation;
+
+    protected synchronized void buildGoogleApiClient() {
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,26 +95,59 @@ public class MyActivity extends Activity{
         startActivity(intent);
     }
 
-//    http://developer.android.com/guide/topics/ui/controls/radiobutton.html
+    //    http://developer.android.com/guide/topics/ui/controls/radiobutton.html
     public void onRadioButtonClicked(View view) {
         // Is the button now checked?
         boolean checked = ((RadioButton) view).isChecked();
 
         // Check which radio button was clicked
-        switch(view.getId()) {
+        switch (view.getId()) {
             case R.id.costCheap:
                 if (checked)
                     costOfVacation = "$";
-                    break;
+                break;
             case R.id.costMed:
                 if (checked)
                     costOfVacation = "$$";
-                    break;
+                break;
             case R.id.costExpensive:
                 if (checked)
                     costOfVacation = "$$$";
-                    break;
+                break;
         }
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.d("CONNECTED", "I'm connected!");
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    public void requestPermissions(@NonNull String[] permissions, int requestCode)
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for Activity#requestPermissions for more details.
+            return;
+        }
+        else
+        {
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if (mLastLocation != null) {
+                Log.d("Latitude", String.valueOf(mLastLocation.getLatitude()));
+                Log.d("Latitude", String.valueOf(mLastLocation.getLongitude()));
+            }
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.d("Faileddd", connectionResult.toString());
     }
 
     public class JSONTask extends AsyncTask<String, String, String> {
