@@ -1,14 +1,21 @@
 package com.dusty.secondtry;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,11 +33,75 @@ public class MyActivity extends Activity{
 
     public final static String EXTRA_MESSAGE = "com.dustin.secondtry.MESSAGE";
     String costOfVacation = null;
+    private Button GPSbutton;
+    private TextView GPStextView;
+    private LocationManager locationManager;
+    private LocationListener locationListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
+
+        GPSbutton = (Button) findViewById(R.id.GPS);
+        GPStextView = (TextView) findViewById(R.id.gpsCoords);
+        locationManager = (locationManager) getSystemService(LOCATION_SERVICE);
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                GPStextView.append("\n " + location.getLatitude() + " " + location.getLongitude());
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+                GPStextView.append("GPS disabled");
+            }
+
+        };
+
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.INTERNET
+            }, 10);
+            return;
+        }
+        else {
+            configurationButton();
+        }
+
+        onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
+            switch(requestCode){
+                case 10:
+                    if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                        configurationButton();
+                    return;
+            }
+        }
+
+
+        private void configurationButton(){
+        GPSbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                locationManager.requestLocationUpdates("gps", 5000, 0, locationListener);
+            }
+        });
+
+    }
+
+
     }
 
     @Override

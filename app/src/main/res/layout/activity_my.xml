@@ -58,4 +58,18 @@
         android:text="@string/button_send"
         android:onClick="sendMessage" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Use GPS to Show Location"
+        android:id="@+id/GPS" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Coordinates: "
+        android:id="@+id/gpsCoords"/>
+
+"/>
+
 </LinearLayout>
