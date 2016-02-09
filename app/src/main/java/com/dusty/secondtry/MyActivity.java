@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -35,7 +36,7 @@ public class MyActivity extends Activity implements GoogleApiClient.ConnectionCa
     public final static String EXTRA_MESSAGE = "com.dustin.secondtry.MESSAGE";
     String costOfVacation = null;
 
-    GoogleApiClient mGoogleApiClient;
+    private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
 
     protected synchronized void buildGoogleApiClient() {
@@ -55,6 +56,20 @@ public class MyActivity extends Activity implements GoogleApiClient.ConnectionCa
         setContentView(R.layout.activity_my);
 
         buildGoogleApiClient();
+    }
+
+    //    when the app starts, GPS starts running.
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    //when the app stops, GPS stops
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mGoogleApiClient.disconnect();
     }
 
     @Override
@@ -79,6 +94,8 @@ public class MyActivity extends Activity implements GoogleApiClient.ConnectionCa
         return super.onOptionsItemSelected(item);
     }
 
+    //  Takes the data entered on the main page, turns them into strings  and then calls JSONTask with
+//    the parameters.
     public void sendMessage(View view) {
         EditText editText = (EditText) findViewById(R.id.vacation_spot);
 
@@ -95,6 +112,14 @@ public class MyActivity extends Activity implements GoogleApiClient.ConnectionCa
 //        intent.putExtra(EXTRA_MESSAGE, message);
 
         startActivity(intent);
+    }
+
+    public void gpsButtonClick(View view) {
+        TextView textView;
+        textView = (TextView) findViewById(R.id.gpsCoords);
+        textView.setTextSize(40);
+        mLastLocation.getLatitude();
+        textView.setText("derp");
     }
 
     //    http://developer.android.com/guide/topics/ui/controls/radiobutton.html
@@ -122,9 +147,11 @@ public class MyActivity extends Activity implements GoogleApiClient.ConnectionCa
     @Override
     public void onConnected(Bundle bundle) {
         Log.d("CONNECTED", "I'm connected!");
+
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
-            //    public void requestPermissions(@NonNull String[] permissions, int requestCode)
+            Log.d("Failed", "Permissions Denied!");
+//                public void requestPermissions(@NonNull String[] permissions, int requestCode)
             // here to request the missing permissions, and then overriding
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
             //                                          int[] grantResults)
@@ -132,14 +159,15 @@ public class MyActivity extends Activity implements GoogleApiClient.ConnectionCa
             // for Activity#requestPermissions for more details.
             return;
         }
-        else
-        {
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (mLastLocation != null) {
+                Log.d("SUCCESS", "mLastLocation is not empty!");
                 Log.d("Latitude", String.valueOf(mLastLocation.getLatitude()));
-                Log.d("Latitude", String.valueOf(mLastLocation.getLongitude()));
+                Log.d("Longitude", String.valueOf(mLastLocation.getLongitude()));
+            } else {
+                Log.d("Failed", "mLastLocation is empty!");
             }
-        }
+
     }
 
     @Override
@@ -149,7 +177,7 @@ public class MyActivity extends Activity implements GoogleApiClient.ConnectionCa
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.d("Faileddd", connectionResult.toString());
+        Log.d("Failed", connectionResult.toString());
     }
 
     public class JSONTask extends AsyncTask<String, String, String> {
