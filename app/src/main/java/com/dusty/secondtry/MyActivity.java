@@ -53,6 +53,8 @@ public class MyActivity extends Activity implements GoogleApiClient.ConnectionCa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
+
+        buildGoogleApiClient();
     }
 
     @Override

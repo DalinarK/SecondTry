@@ -39,6 +39,9 @@ public class DisplayMessageActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_message);
+
+        //receives data from previous screen - was used as proof of concept. Doesn't actually
+        //do much now.
         TextView textView = new TextView(this);
         Intent intent = getIntent();
         String message = intent.getStringExtra(MyActivity.EXTRA_MESSAGE);
