@@ -116,7 +116,7 @@ public class DisplayMessageActivity extends Activity {
                     if(finalObject.isNull("location")) {
                         locationRec = null;
                     } else {
-                        locationRec = finalObject.getString("location");
+                        locationRec = "Location: " + finalObject.getString("location");
                     }
 
                     if(finalObject.isNull("days")) {

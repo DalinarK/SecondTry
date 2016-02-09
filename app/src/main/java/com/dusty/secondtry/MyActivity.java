@@ -25,7 +25,7 @@ import java.net.URL;
 public class MyActivity extends Activity{
 
     public final static String EXTRA_MESSAGE = "com.dustin.secondtry.MESSAGE";
-    String costOfVacation;
+    String costOfVacation = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +65,7 @@ public class MyActivity extends Activity{
         editText = (EditText) findViewById(R.id.number_days);
         String number_days = editText.getText().toString();
 
-        new JSONTask().execute("http://ec2-54-213-159-144.us-west-2.compute.amazonaws.com:3001/vacationlist", vacation_name, vacation_spot, number_days);
+        new JSONTask().execute("http://ec2-54-213-159-144.us-west-2.compute.amazonaws.com:3001/vacationlist", vacation_name, vacation_spot, number_days, costOfVacation);
         Intent intent = new Intent(this, DisplayMessageActivity.class);
 //        String message = editText.getText().toString();
 //        intent.putExtra(EXTRA_MESSAGE, message);
@@ -121,7 +121,10 @@ public class MyActivity extends Activity{
                 // give it 15 seconds to respond
 //          connection.setReadTimeout(15*1000)
                 JSONObject postInfo = new JSONObject();
-                postInfo.put("location", params[1]);
+                postInfo.put("name", params[1]);
+                postInfo.put("location", params[2]);
+                postInfo.put("days", params[3]);
+                postInfo.put("cost", params[4]);
                 String JSONstring = postInfo.toString();
 
                 byte[] outputInBytes = JSONstring.getBytes("UTF-8");
