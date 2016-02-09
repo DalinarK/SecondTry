@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">SecondTry</string>
+    <string name="edit_message">Enter a message</string>
+    <string name="button_send">Send</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_display_message">My Message</string>
+    <string name="number_days" >Number of days</string>
+    <string name="vacation_spot">Vacation Location</string>
+    <string name="cost_prompt">Cost of trip</string>
+    <string name="vacation_name">Title of your trip!</string>
+
+    <string-array name="cost_choices">
+        <item>$</item>
+        <item>$$</item>
+        <item>$$$</item>
+    </string-array>
+
+
+    <string name="hello_world">Hello world!</string>
+
+
+</resources>
