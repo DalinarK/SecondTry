@@ -56,21 +56,38 @@ public class MyActivity extends Activity{
     }
 
     public void sendMessage(View view) {
-        EditText editText = (EditText) findViewById(R.id.vacation_spot);
+        EditText nameText = (EditText) findViewById(R.id.vacation_name);
+        String vacation_name = nameText.getText().toString();
+        EditText locationText = (EditText) findViewById(R.id.vacation_spot);
+        String vacation_spot = locationText.getText().toString();
+        EditText daysText = (EditText) findViewById(R.id.number_days);
+        String number_days = daysText.getText().toString();
 
-        editText = (EditText) findViewById(R.id.vacation_name);
-        String vacation_name = editText.getText().toString();
-        editText = (EditText) findViewById(R.id.vacation_spot);
-        String vacation_spot = editText.getText().toString();
-        editText = (EditText) findViewById(R.id.number_days);
-        String number_days = editText.getText().toString();
+//      Input validation
+        if (vacation_name.length() < 10 )
+        {
+            if(vacation_name.length() == 0)
+                nameText.setError("Title is required!");
+            else if (vacation_name.length() < 10)
+                nameText.setError("Be more descriptive!");
 
-        new JSONTask().execute("http://ec2-54-213-159-144.us-west-2.compute.amazonaws.com:3001/vacationlist", vacation_name, vacation_spot, number_days, costOfVacation);
-        Intent intent = new Intent(this, DisplayMessageActivity.class);
-//        String message = editText.getText().toString();
-//        intent.putExtra(EXTRA_MESSAGE, message);
+        }
+        else if ( vacation_spot.length() == 0){
+            locationText.setError("Location is required!");
+        }
+        else if (number_days.length() == 0){
+            daysText.setError("Number fo days is required!");
+        }
+        else
+        {
+            new JSONTask().execute("http://ec2-54-213-159-144.us-west-2.compute.amazonaws.com:3001/vacationlist", vacation_name, vacation_spot, number_days, costOfVacation);
+            Intent intent = new Intent(this, DisplayMessageActivity.class);
+//          String message = editText.getText().toString();
+//          intent.putExtra(EXTRA_MESSAGE, message);
 
-        startActivity(intent);
+            startActivity(intent);
+        }
+
     }
 
 //    http://developer.android.com/guide/topics/ui/controls/radiobutton.html
