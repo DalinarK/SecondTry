@@ -14,11 +14,26 @@
         android:hint="@string/vacation_name"
         />
 
-    <EditText android:id="@+id/vacation_spot"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/vacation_spot"
-        />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <EditText android:id="@+id/vacation_spot"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/vacation_spot"
+            />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Use current location"
+            android:id="@+id/useCurrentLoc"
+            android:layout_gravity="right"
+            android:onClick="useCurrentLocation"/>
+    </LinearLayout>
 
     <EditText android:id="@+id/number_days"
         android:layout_width="match_parent"
@@ -58,5 +73,12 @@
         android:layout_height="wrap_content"
         android:text="@string/button_send"
         android:onClick="sendMessage" />
+
+    <EditText android:id="@+id/latOutput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/number_days"
+        android:inputType="number"
+        />
 
 </LinearLayout>
