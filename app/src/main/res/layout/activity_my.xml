@@ -74,11 +74,4 @@
         android:text="@string/button_send"
         android:onClick="sendMessage" />
 
-    <EditText android:id="@+id/latOutput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/number_days"
-        android:inputType="number"
-        />
-
 </LinearLayout>
